@@ -1,13 +1,14 @@
 import { useState, useEffect, useRef, useCallback, forwardRef, useImperativeHandle } from 'react'
 import { Eye, Pencil } from 'lucide-react'
 import { fetchFile, saveFile } from '../lib/api'
-import { renderMarkdown, enhanceCodeBlocks } from '../lib/markdown'
+import { renderMarkdown, enhanceCodeBlocks, resolveWikiPath } from '../lib/markdown'
 import styles from './ContentPane.module.css'
 
 interface ContentPaneProps {
   path: string | null
   reloadSignal: number
   onSelectionChange: (text: string) => void
+  onNavigate: (path: string) => void
 }
 
 export interface ContentPaneHandle {
@@ -19,7 +20,7 @@ const HL = 'wiki-sel'
 const SAVE_DELAY = 600
 
 export const ContentPane = forwardRef<ContentPaneHandle, ContentPaneProps>(
-  function ContentPane({ path, reloadSignal, onSelectionChange }, ref) {
+  function ContentPane({ path, reloadSignal, onSelectionChange, onNavigate }, ref) {
     const [text, setText] = useState('')
     const [mode, setMode] = useState<'view' | 'edit'>('view')
     const [dirty, setDirty] = useState(false)
@@ -129,6 +130,27 @@ export const ContentPane = forwardRef<ContentPaneHandle, ContentPaneProps>(
       onSelectionChange(txt)
     }, [onSelectionChange])
 
+    // Intercept clicks on internal markdown links and navigate via app state
+    // instead of letting the browser follow a dead relative URL.
+    const onViewClick = useCallback((e: React.MouseEvent) => {
+      // Respect modifier clicks (open in new tab, etc.).
+      if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return
+      const anchor = (e.target as HTMLElement).closest('a')
+      if (!anchor) return
+      const href = anchor.getAttribute('href') || ''
+      const target = resolveWikiPath(path, href)
+      if (target === null) {
+        // External link: open in a new tab to keep the wiki open.
+        if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith('//')) {
+          anchor.setAttribute('target', '_blank')
+          anchor.setAttribute('rel', 'noopener noreferrer')
+        }
+        return
+      }
+      e.preventDefault()
+      if (target) onNavigate(target)
+    }, [path, onNavigate])
+
     const captureEdit = useCallback(() => {
       const el = textareaRef.current
       if (!el || el.selectionStart === el.selectionEnd) return
@@ -165,7 +187,7 @@ export const ContentPane = forwardRef<ContentPaneHandle, ContentPaneProps>(
           </div>
         </div>
         {mode === 'view' ? (
-          <div ref={viewRef} className={`${styles.view} scroll`} onMouseUp={captureView} />
+          <div ref={viewRef} className={`${styles.view} scroll`} onMouseUp={captureView} onClick={onViewClick} />
         ) : (
           <textarea
             ref={textareaRef}

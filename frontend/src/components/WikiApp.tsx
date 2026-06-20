@@ -72,6 +72,7 @@ export function WikiApp({ onLogout }: WikiAppProps) {
           path={selectedPath}
           reloadSignal={reloadSignal}
           onSelectionChange={setSelText}
+          onNavigate={selectPath}
         />
       </main>
       <aside className={styles.right}>

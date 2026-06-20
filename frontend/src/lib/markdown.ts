@@ -22,6 +22,36 @@ export function renderMarkdown(text: string): string {
   return marked.parse(text) as string
 }
 
+// Resolve a relative markdown link (href) against the currently open file's path.
+// Returns the wiki path (relative to content root) for internal links, or null
+// for external links (http(s)://, mailto:, etc.) and pure anchors (#...).
+export function resolveWikiPath(currentPath: string | null, href: string): string | null {
+  if (!href) return null
+  // External, protocol-relative, or in-page anchor — let the browser handle it.
+  if (/^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith('//') || href.startsWith('#')) {
+    return null
+  }
+  // Drop any query/hash fragment.
+  const clean = href.replace(/[?#].*$/, '')
+  if (!clean) return null
+
+  let decoded = clean
+  try { decoded = decodeURIComponent(clean) } catch { /* keep raw */ }
+
+  // Absolute (from content root) vs relative to current file's directory.
+  const baseParts = decoded.startsWith('/')
+    ? []
+    : (currentPath ?? '').split('/').slice(0, -1)
+
+  const parts = baseParts.slice()
+  for (const seg of decoded.replace(/^\//, '').split('/')) {
+    if (seg === '' || seg === '.') continue
+    if (seg === '..') parts.pop()
+    else parts.push(seg)
+  }
+  return parts.join('/')
+}
+
 export function escapeHtml(str: string): string {
   const d = document.createElement('div')
   d.textContent = str
