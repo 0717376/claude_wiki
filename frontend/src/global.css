@@ -1,0 +1,152 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    /* ── Bear-inspired light theme ── */
+    --accent: #e0544c;            /* Bear red */
+    --accent-hover: #c8453d;
+    --accent-soft: #fdeceb;       /* soft red wash (selected note) */
+    --sel: rgba(224, 84, 76, 0.16);
+
+    --bg: #ffffff;
+    --bg-2: #faf9f7;              /* warm off-white */
+    --bg-3: #f1efec;             /* hover */
+    --surface: #e9e6e1;
+    --sidebar-bg: #f6f4f1;
+    --user-bg: #f8f6f3;
+
+    --text: #2b2a28;
+    --text-2: #6c6a65;
+    --text-3: #a6a39d;
+
+    --border: #ecebe7;
+    --border-light: #dcdad4;
+
+    --code-bg: #f6f4f1;
+    --code-text: #3a3936;
+    --error: #d23a30;
+
+    --radius: 10px;
+    --radius-lg: 14px;
+    --max-w: 760px;
+    --mono: "SF Mono", "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
+    --sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+}
+
+html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    /* iOS: stop rubber-band bounce and text auto-inflation in landscape */
+    overscroll-behavior: none;
+    -webkit-text-size-adjust: 100%;
+}
+
+button {
+    -webkit-tap-highlight-color: transparent;
+}
+
+#root {
+    height: 100%;
+}
+
+::selection {
+    background: var(--sel);
+}
+
+/* Persistent pinned selection (CSS Custom Highlight API) */
+::highlight(wiki-sel) {
+    background: var(--sel);
+    color: inherit;
+}
+
+@keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.tw-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.15em;
+    background: var(--accent);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    border-radius: 1px;
+    animation: cursorBlink 0.7s step-end infinite;
+}
+
+.code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: -14px -16px 10px;
+    padding: 6px 10px 6px 14px;
+    border-bottom: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+}
+
+.code-lang {
+    color: var(--text-3);
+    text-transform: lowercase;
+}
+
+.copy-btn {
+    padding: 3px 10px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text-3);
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.copy-btn:hover {
+    color: var(--text);
+    background: var(--bg-3);
+}
+
+.copy-btn.copied {
+    color: #16a34a;
+}
+
+.table-wrap {
+    margin: 12px 0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg);
+}
+
+.table-wrap .code-header {
+    margin: 0;
+    padding: 6px 10px 6px 14px;
+}
+
+.table-wrap table {
+    margin: 0;
+    width: 100%;
+    display: table;
+}
+
+.table-wrap .table-scroll {
+    overflow-x: auto;
+}
+
+.scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+.scroll::-webkit-scrollbar-track { background: transparent; }
+.scroll::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 6px; border: 2px solid transparent; background-clip: padding-box; }
+.scroll::-webkit-scrollbar-thumb:hover { background: var(--text-3); background-clip: padding-box; }

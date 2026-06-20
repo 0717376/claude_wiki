@@ -1,0 +1,65 @@
+.screen {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-2);
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 280px;
+    max-width: calc(100vw - 40px);
+    padding: 32px 28px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+
+.title {
+    font-size: 20px;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.input {
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: inherit;
+    /* 16px avoids iOS focus zoom */
+    font-size: 16px;
+    outline: none;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.input:focus {
+    border-color: var(--border-light);
+}
+
+.error {
+    color: var(--error);
+    font-size: 12px;
+    text-align: center;
+}
+
+.btn {
+    padding: 11px;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: var(--bg);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn:hover { opacity: 0.85; }
+.btn:disabled { opacity: 0.4; cursor: default; }

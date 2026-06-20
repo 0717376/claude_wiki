@@ -1,0 +1,23 @@
+services:
+  backend:
+    build: ./backend
+    volumes:
+      - ./content:/app/content        # md-файлы вики (видны и на хосте)
+      - ./data:/app/data              # session.json единой сессии
+      - ~/.claude:/root/.claude       # авторизация Claude CLI
+    environment:
+      - WIKI_PASSWORD=${WIKI_PASSWORD}
+      - CLAUDE_MODEL=${CLAUDE_MODEL:-sonnet}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - TELEGRAM_ALLOWED_IDS=${TELEGRAM_ALLOWED_IDS:-}
+      - ASR_UPSTREAM=${ASR_UPSTREAM:-}
+      - ASR_MODEL=${ASR_MODEL:-gigaam-rnnt}
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "${WIKI_PORT:-8842}:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

@@ -1,0 +1,11 @@
+.env
+data/
+
+# Личное содержимое вики остаётся локальным. Демо — в content.example/
+/content/
+
+node_modules/
+dist/
+__pycache__/
+.venv/
+uv.lock
